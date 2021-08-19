@@ -31,7 +31,15 @@ class Coordinator():
             :param request: It accepts first_name,last_name,email,username,password,is_staff,is_active,is_superuser and date_joined as parameter.
             :return: It returns True if data successfully inserted.
         """
-        username=data.get('username')
-        email=data.get('email')
-        inserted_data=self.collection.insert({'first_name':data.get('first_name'),'last_name':data.get('last_name'),'email':email,'username':data.get('username'),'password':data.get('password'),'is_staff':0,'is_active':1,'is_superuser':0,'date_joined':datetime.now()})
+        inserted_data=self.collection.insert({'first_name':data.get('first_name'),'last_name':data.get('last_name'),'email':data.get('email'),'username':data.get('username'),'password':data.get('password'),'is_staff':0,'is_active':1,'is_superuser':0,'date_joined':datetime.now()})
         return True
+
+    def authenticate_data(self,username):
+        """
+            This method is used to check authentication.
+            :param request: It accepts username as parameter.
+            :return: It returns authenticated data according to username.
+        """ 
+
+        user_authentication= self.collection.find_one({'username':username},{'username':1,'password':1,'_id':0})
+        return user_authentication
