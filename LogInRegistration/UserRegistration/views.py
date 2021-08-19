@@ -1,7 +1,10 @@
 from rest_framework.views import APIView,Response,status
 from .coordinator import Coordinator
 from rest_framework.exceptions import ValidationError,AuthenticationFailed
+from log import get_logger
 
+# Logger configuration
+logger= get_logger()
 
 
 class Index(APIView):
@@ -30,19 +33,23 @@ class Register(APIView):
             if insert_data is True:
                 return Response({"message":"Registration Successfull"})
             return Response({'message':'Try Again'})
-        except ValueError:
+        except ValueError as e:
+            logger.exception(e)
             return Response({"message": 'Invalid Input'}, status=status.HTTP_400_BAD_REQUEST)
-        except ValidationError:
+        except ValidationError as e:
+            logger.exception(e)
             return Response({'message': 'Invalid Input'}, status=status.HTTP_400_BAD_REQUEST)  
         except Exception as e:
+            logger.exception(e)
             return Response({"message1": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class LogIn(APIView):
         
     def post(self,request):
-        """[This method will take the required input and do login]
-        Returns:
-            [returns the message if successfully loggedin]
+        """
+            This method is used for login authentication.
+            :param request: It's accept username and password as parameter.
+            :return: It returns the message if successfully loggedin.
         """
         try:
             data=request.data
@@ -52,11 +59,15 @@ class LogIn(APIView):
             if username==user_auth['username'] and password==user_auth['password']:
                 return Response({"msg": "Loggedin Successfully", 'data' : {'username': data.get('username')}}, status=status.HTTP_200_OK)
             return Response({"msg": 'Wrong username or password'}, status=status.HTTP_400_BAD_REQUEST)
-        except ValueError:
+        except ValueError as e:
+            logger.exception(e)
             return Response({"message": 'Invalid Input'}, status=status.HTTP_400_BAD_REQUEST)
-        except ValidationError:
+        except ValidationError as e:
+            logger.exception(e)
             return Response({'message': "wrong credentials"}, status=status.HTTP_400_BAD_REQUEST) 
-        except AuthenticationFailed:
+        except AuthenticationFailed as e:
+            logger.exception(e)
             return Response({'message': 'Authentication Failed'}, status=status.HTTP_400_BAD_REQUEST) 
-        except Exception:
+        except Exception as e:
+            logger.exception(e)
             return Response({"msg1": "wrong credentials"}, status=status.HTTP_400_BAD_REQUEST)
