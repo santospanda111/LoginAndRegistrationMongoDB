@@ -1,3 +1,5 @@
-from django.shortcuts import render
+from rest_framework.views import APIView,Response
 
-# Create your views here.
+class Index(APIView):
+    def get(self,request):
+        return Response({'message':'Welcome to LogIn & Registration App'})
